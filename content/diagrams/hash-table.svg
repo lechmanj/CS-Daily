@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 316" role="img" aria-labelledby="t" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" fill="currentColor">
+  <title id="t">A hash table with five buckets where cat and bird collide in bucket 2 and are chained</title>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <text x="30" y="24" font-weight="600">Hash table with 5 buckets (separate chaining)</text>
+  <rect x="30" y="40" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="50" y="62" text-anchor="middle">0</text>
+  <text x="92" y="62" opacity="0.6">empty</text>
+  <rect x="30" y="84" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="50" y="106" text-anchor="middle">1</text>
+  <line x1="70" y1="101" x2="98" y2="101" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="100" y="84" width="80" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="140" y="106" text-anchor="middle">fish</text>
+  <rect x="30" y="128" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="50" y="150" text-anchor="middle">2</text>
+  <line x1="70" y1="145" x2="98" y2="145" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="100" y="128" width="80" height="34" rx="4" fill="none" style="stroke: var(--diagram-accent, #3b5bdb)" stroke-width="2.5"/><text x="140" y="150" text-anchor="middle">cat</text>
+  <line x1="180" y1="145" x2="218" y2="145" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="220" y="128" width="80" height="34" rx="4" fill="none" style="stroke: var(--diagram-accent, #3b5bdb)" stroke-width="2.5"/><text x="260" y="150" text-anchor="middle">bird</text>
+  <rect x="30" y="172" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="50" y="194" text-anchor="middle">3</text>
+  <line x1="70" y1="189" x2="98" y2="189" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="100" y="172" width="80" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="140" y="194" text-anchor="middle">ant</text>
+  <rect x="30" y="216" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="50" y="238" text-anchor="middle">4</text>
+  <line x1="70" y1="233" x2="98" y2="233" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="100" y="216" width="80" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="140" y="238" text-anchor="middle">dog</text>
+  <text x="30" y="268" font-size="12">bucket = hash(key) mod 5</text>
+  <text x="30" y="285" font-size="12">hash = sum of the key’s character codes (illustrative)</text>
+  <text x="30" y="302" font-size="12">“cat” and “bird” collide in bucket 2, so they share a chain.</text>
+</svg>

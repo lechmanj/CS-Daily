@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 316" role="img" aria-labelledby="t" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" fill="currentColor">
+  <title id="t">Two threads each holding one lock and waiting for the other, forming a cycle</title>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <circle cx="130" cy="90" r="38" style="fill: var(--diagram-accent, #3b5bdb); fill-opacity: 0.18; stroke: var(--diagram-accent, #3b5bdb)" stroke-width="2.5"/><text x="130" y="94" text-anchor="middle">Thread A</text>
+  <rect x="310" y="70" width="80" height="40" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="350" y="94" text-anchor="middle">Lock 2</text>
+  <circle cx="350" cy="210" r="38" style="fill: var(--diagram-accent, #3b5bdb); fill-opacity: 0.18; stroke: var(--diagram-accent, #3b5bdb)" stroke-width="2.5"/><text x="350" y="214" text-anchor="middle">Thread B</text>
+  <rect x="90" y="190" width="80" height="40" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="130" y="214" text-anchor="middle">Lock 1</text>
+  <line x1="172" y1="90" x2="306" y2="90" stroke="currentColor" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <line x1="350" y1="114" x2="350" y2="168" stroke="currentColor" stroke-width="1.8" marker-end="url(#a)"/>
+  <line x1="308" y1="210" x2="174" y2="210" stroke="currentColor" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <line x1="130" y1="186" x2="130" y2="132" stroke="currentColor" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="237" y="82" text-anchor="middle" font-size="12">A waits for Lock 2</text>
+  <text x="360" y="148" font-size="12">held by B</text>
+  <text x="243" y="232" text-anchor="middle" font-size="12">B waits for Lock 1</text>
+  <text x="52" y="152" font-size="12">held by A</text>
+  <text x="240" y="24" text-anchor="middle" font-weight="600">A circular wait</text>
+  <text x="240" y="268" text-anchor="middle" font-size="12">Solid arrow: the lock is held by that thread.</text>
+  <text x="240" y="285" text-anchor="middle" font-size="12">Dashed arrow: the thread is waiting for that lock.</text>
+  <text x="240" y="302" text-anchor="middle" font-size="12">The arrows form a cycle, so neither thread can proceed.</text>
+</svg>

@@ -1,0 +1,32 @@
+{
+  "$schema": "../entry.schema.json",
+  "id": "big-o-notation",
+  "title": "Big O Notation",
+  "category": "complexity-and-theory",
+  "difficulty": "beginner",
+  "definition": "Big O notation describes how an algorithm's running time or memory use grows as its input gets larger, ignoring constant factors and lower-order terms.",
+  "explanation": "Imagine counting the basic steps an algorithm takes for an input of size *n*. A loop that touches each item once takes about *n* steps; a loop nested inside another takes about *n×n*. Big O keeps only the part that dominates as *n* grows: 3n + 10 becomes O(n), and n² + 100n becomes O(n²).\n\nThe common classes, from slowest-growing to fastest-growing, are O(1) constant, O(log n) logarithmic, O(n) linear, O(n log n) linearithmic, O(n²) quadratic and O(2ⁿ) exponential. Doubling the input roughly doubles the work for O(n), quadruples it for O(n²), and adds only one extra step for O(log n).\n\nBig O describes *growth*, not speed. An O(n) algorithm with a large constant can lose to an O(n²) one on small inputs. Strictly, O(...) is an upper bound; in everyday use people quote it for the worst case, and sometimes loosely for the typical case. The same notation applies to memory, which is why you will often see time and space complexity discussed together.",
+  "whyItMatters": "It lets you compare approaches before writing any code and predict how a program will behave when the data grows from a thousand items to a billion. Most performance problems in practice come from choosing an algorithm whose growth rate does not fit the data.",
+  "examples": [
+    {
+      "language": "python",
+      "title": "Four growth rates",
+      "code": "def first_item(items):              # O(1): one step, however long the list is\n    return items[0]\n\ndef contains(items, target):        # O(n): may look at every item once\n    for item in items:\n        if item == target:\n            return True\n    return False\n\ndef has_duplicate(items):           # O(n^2): compares every pair\n    for i in range(len(items)):\n        for j in range(i + 1, len(items)):\n            if items[i] == items[j]:\n                return True\n    return False\n\ndef has_duplicate_fast(items):      # O(n) time, O(n) extra space\n    seen = set()\n    for item in items:\n        if item in seen:\n            return True\n        seen.add(item)\n    return False\n\nprint(has_duplicate([1, 2, 3, 2]))       # True\nprint(has_duplicate_fast([1, 2, 3, 2]))  # True\n",
+      "explanation": "has_duplicate and has_duplicate_fast give the same answers, but doubling the input roughly quadruples the first one's work and only doubles the second's. The fast version trades extra memory for speed."
+    },
+    {
+      "language": "typescript",
+      "title": "Four growth rates",
+      "code": "function firstItem<T>(items: T[]): T | undefined {   // O(1)\n  return items[0];\n}\n\nfunction contains<T>(items: T[], target: T): boolean { // O(n)\n  for (const item of items) {\n    if (item === target) return true;\n  }\n  return false;\n}\n\nfunction hasDuplicate<T>(items: T[]): boolean {        // O(n^2)\n  for (let i = 0; i < items.length; i++) {\n    for (let j = i + 1; j < items.length; j++) {\n      if (items[i] === items[j]) return true;\n    }\n  }\n  return false;\n}\n\nfunction hasDuplicateFast<T>(items: T[]): boolean {    // O(n) time, O(n) space\n  const seen = new Set<T>();\n  for (const item of items) {\n    if (seen.has(item)) return true;\n    seen.add(item);\n  }\n  return false;\n}\n\nconsole.log(hasDuplicate([1, 2, 3, 2]));     // true\nconsole.log(hasDuplicateFast([1, 2, 3, 2])); // true\n",
+      "explanation": "The same four functions with generic types. A Set gives hasDuplicateFast its O(1) average membership test."
+    }
+  ],
+  "visual": {
+    "type": "svg",
+    "path": "diagrams/big-o-notation.svg",
+    "alt": "A line chart of work against input size. O(1) and O(log n) stay almost flat, O(n) rises steadily, O(n log n) rises faster, and O(n squared) climbs steeply, quickly overtaking the others."
+  },
+  "related": ["binary-search", "hash-table"],
+  "tags": ["complexity", "performance", "analysis"],
+  "source": "bundled"
+}

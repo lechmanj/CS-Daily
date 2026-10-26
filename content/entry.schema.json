@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "data-structures",
+        "algorithms",
+        "complexity-and-theory",
+        "operating-systems",
+        "networking",
+        "databases",
+        "security",
+        "programming-languages",
+        "software-engineering",
+        "distributed-systems"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
+    },
+    "definition": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "explanation": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 6000
+    },
+    "whyItMatters": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "complexity": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "space": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "time",
+        "space"
+      ],
+      "additionalProperties": false
+    },
+    "examples": {
+      "minItems": 1,
+      "maxItems": 14,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "python",
+              "javascript",
+              "typescript",
+              "java",
+              "cpp",
+              "go",
+              "rust"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "language",
+          "title",
+          "code",
+          "explanation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "visual": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "svg"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^diagrams\\/[a-z0-9]+(?:-[a-z0-9]+)*\\.svg$"
+            },
+            "alt": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "type",
+            "path",
+            "alt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "mermaid"
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "alt": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "type",
+            "source",
+            "alt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "inline-svg"
+            },
+            "svg": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50000
+            },
+            "alt": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "type",
+            "svg",
+            "alt"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "related": {
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "tags": {
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 40
+      }
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "bundled",
+        "ai-generated"
+      ]
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "category",
+    "difficulty",
+    "definition",
+    "explanation",
+    "whyItMatters",
+    "examples",
+    "related",
+    "tags",
+    "source"
+  ],
+  "additionalProperties": false,
+  "title": "CS Daily entry",
+  "description": "Structure of a CS Daily entry. Cross-field and cross-entry rules (unique ids, resolvable \"related\" ids, existing diagram files) are checked by `npm run validate:content`."
+}

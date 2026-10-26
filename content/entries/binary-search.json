@@ -1,0 +1,48 @@
+{
+  "$schema": "../entry.schema.json",
+  "id": "binary-search",
+  "title": "Binary Search",
+  "category": "algorithms",
+  "difficulty": "beginner",
+  "definition": "Binary search finds a target value in a sorted list by repeatedly halving the range it still has to look in.",
+  "explanation": "Start with the whole sorted list and compare the target with the middle element. If they match, you are done. If the target is smaller, it can only be in the left half; if it is larger, it can only be in the right half. Throw the other half away and repeat on what is left.\n\nEvery comparison discards half of the remaining candidates, so the number of steps grows with the *logarithm* of the list size. A sorted list of one million items needs at most about 20 comparisons, where a left-to-right scan could need a million.\n\nTwo requirements matter: the data must be **sorted**, and you must be able to jump straight to the middle element (arrays, not linked lists). A classic bug is computing the midpoint as `(low + high) / 2`, which can overflow fixed-width integers in languages like Java and C++. Writing `low + (high - low) / 2` avoids it.",
+  "whyItMatters": "Searching sorted data is everywhere: database indexes, dictionary lookups, `git bisect`, and finding where to insert into a sorted collection. The same halving idea works any time you can ask \"is the answer above or below this point?\", even when there is no list at all.",
+  "complexity": {
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "examples": [
+    {
+      "language": "python",
+      "title": "Iterative",
+      "code": "def binary_search(items, target):\n    \"\"\"Return the index of target in the sorted list items, or -1 if absent.\"\"\"\n    low, high = 0, len(items) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if items[mid] == target:\n            return mid\n        if items[mid] < target:\n            low = mid + 1      # target can only be in the right half\n        else:\n            high = mid - 1     # target can only be in the left half\n    return -1\n\nprint(binary_search([2, 5, 8, 12, 16, 23, 38, 56, 72], 23))  # 5\n",
+      "explanation": "The search range is items[low..high]. Each loop iteration shrinks it by moving one end past mid. In real Python code, prefer the standard library's bisect module."
+    },
+    {
+      "language": "javascript",
+      "title": "Iterative",
+      "code": "function binarySearch(items, target) {\n  let low = 0;\n  let high = items.length - 1;\n  while (low <= high) {\n    const mid = Math.floor((low + high) / 2);\n    if (items[mid] === target) return mid;\n    if (items[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}\n\nconsole.log(binarySearch([2, 5, 8, 12, 16, 23, 38, 56, 72], 23)); // 5\n",
+      "explanation": "Same algorithm. JavaScript numbers are doubles, so (low + high) cannot overflow for realistic array sizes, but Math.floor is needed because division is not integer division."
+    },
+    {
+      "language": "java",
+      "title": "Iterative",
+      "code": "public class BinarySearch {\n    static int binarySearch(int[] items, int target) {\n        int low = 0;\n        int high = items.length - 1;\n        while (low <= high) {\n            int mid = low + (high - low) / 2; // avoids int overflow of (low + high)\n            if (items[mid] == target) return mid;\n            if (items[mid] < target) low = mid + 1;\n            else high = mid - 1;\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[] items = {2, 5, 8, 12, 16, 23, 38, 56, 72};\n        System.out.println(binarySearch(items, 23)); // 5\n    }\n}\n",
+      "explanation": "With 32-bit ints, low + high can exceed the maximum value on very large arrays, so the midpoint is computed as low + (high - low) / 2. The JDK ships this as Arrays.binarySearch."
+    },
+    {
+      "language": "cpp",
+      "title": "Iterative",
+      "code": "#include <iostream>\n#include <vector>\n\nint binarySearch(const std::vector<int>& items, int target) {\n    int low = 0;\n    int high = static_cast<int>(items.size()) - 1;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;  // avoids overflow of (low + high)\n        if (items[mid] == target) return mid;\n        if (items[mid] < target) low = mid + 1;\n        else high = mid - 1;\n    }\n    return -1;\n}\n\nint main() {\n    std::vector<int> items{2, 5, 8, 12, 16, 23, 38, 56, 72};\n    std::cout << binarySearch(items, 23) << \"\\n\";  // 5\n}\n",
+      "explanation": "The same loop over a std::vector. In production C++, std::lower_bound and std::binary_search implement this for you."
+    }
+  ],
+  "visual": {
+    "type": "svg",
+    "path": "diagrams/binary-search.svg",
+    "alt": "Three rows of the array 2, 5, 8, 12, 16, 23, 38, 56, 72. Each row highlights the middle element compared and fades the half ruled out, narrowing from the whole array to the single cell holding 23."
+  },
+  "related": ["big-o-notation", "hash-table"],
+  "tags": ["searching", "sorted-data", "divide-and-conquer"],
+  "source": "bundled"
+}

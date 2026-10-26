@@ -3,6 +3,8 @@
  * window creation.
  */
 import { app, type BrowserWindow } from 'electron'
+import { loadContent } from './content/loader'
+import { getContentDir } from './content/paths'
 import { registerIpcHandlers } from './ipc'
 import { createLogger } from './logger'
 import { createWidgetWindow } from './window'
@@ -31,6 +33,12 @@ if (!app.requestSingleInstanceLock()) {
       widget = null
     })
     log.info('Widget ready')
+
+    // Phase 4 hands this to the renderer; for now, surface content problems early.
+    void loadContent(getContentDir()).then(({ entries, issues }) => {
+      log.info(`Loaded ${entries.length} bundled entries`)
+      for (const { file, message } of issues) log.warn(`Content issue in ${file}: ${message}`)
+    })
 
     // macOS: re-create the window when the Dock icon is clicked with none open.
     app.on('activate', () => {

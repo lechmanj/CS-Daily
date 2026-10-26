@@ -1,0 +1,32 @@
+{
+  "$schema": "../entry.schema.json",
+  "id": "tcp-three-way-handshake",
+  "title": "TCP Three-Way Handshake",
+  "category": "networking",
+  "difficulty": "intermediate",
+  "definition": "The TCP three-way handshake is the SYN, SYN-ACK, ACK exchange two hosts perform to agree on starting sequence numbers before opening a reliable connection.",
+  "explanation": "TCP promises ordered, reliable delivery, and that needs both sides to agree on where each byte stream starts. The handshake sets this up in three segments.\n\n1. **SYN**: the client picks an initial sequence number *x* and sends a segment with the SYN flag.\n2. **SYN-ACK**: the server picks its own initial sequence number *y* and replies with SYN and ACK set, acknowledging *x + 1*.\n3. **ACK**: the client acknowledges *y + 1*. The connection is now established and data can flow in both directions.\n\nSequence numbers let each side order incoming bytes, detect loss and discard duplicates. Initial numbers are chosen unpredictably so stray segments from old connections, or spoofed ones, are unlikely to be accepted. The handshake costs one network round trip before the first byte of application data, which is one reason higher-level protocols reuse connections.\n\nBetween the first and third steps the server holds *half-open* connection state. A **SYN flood** attack exploits that by sending many SYNs and never completing; servers defend with techniques such as SYN cookies.",
+  "whyItMatters": "Every web request, database connection and SSH session over TCP starts this way. Understanding it explains connection latency, why connection pooling and keep-alive help, and how a common class of denial-of-service attack works.",
+  "examples": [
+    {
+      "language": "python",
+      "title": "Loopback server and client",
+      "code": "import socket\nimport threading\n\nserver = socket.create_server((\"127.0.0.1\", 0))  # port 0: the OS picks a free port\nport = server.getsockname()[1]\n\ndef accept_one():\n    conn, _ = server.accept()   # returns a connection whose handshake has completed\n    conn.sendall(b\"hello\")\n    conn.close()\n\nthreading.Thread(target=accept_one).start()\n\n# connect() makes the OS send SYN, receive SYN-ACK and send the final ACK.\nclient = socket.create_connection((\"127.0.0.1\", port))\nprint(client.recv(5))  # b'hello'\nclient.close()\nserver.close()\n",
+      "explanation": "You never write the handshake yourself: the operating system's TCP stack performs it. create_connection returns only after the three steps finish, and accept hands back connections that are already established."
+    },
+    {
+      "language": "javascript",
+      "title": "Loopback server and client (Node.js)",
+      "code": "const net = require(\"node:net\");\n\nconst server = net.createServer((socket) => {   // runs once the handshake is done\n  socket.end(\"hello\");\n});\n\nserver.listen(0, \"127.0.0.1\", () => {           // port 0: the OS picks a free port\n  const { port } = server.address();\n  // net.connect() triggers SYN, SYN-ACK, ACK inside the OS network stack.\n  const client = net.connect(port, \"127.0.0.1\", () => console.log(\"connected\"));\n  client.on(\"data\", (data) => {\n    console.log(data.toString()); // hello\n    client.end();\n    server.close();\n  });\n});\n",
+      "explanation": "The connect callback fires after the handshake completes. As in Python, the handshake itself happens in the kernel, not in your code."
+    }
+  ],
+  "visual": {
+    "type": "mermaid",
+    "alt": "A sequence diagram: the client sends SYN to the server, the server replies SYN-ACK, the client sends ACK, and the connection is established.",
+    "source": "sequenceDiagram\n    participant C as Client\n    participant S as Server\n    C->>S: SYN (seq = x)\n    S->>C: SYN-ACK (seq = y, ack = x + 1)\n    C->>S: ACK (ack = y + 1)\n    Note over C,S: Connection established"
+  },
+  "related": [],
+  "tags": ["tcp", "handshake", "sockets", "transport-layer"],
+  "source": "bundled"
+}

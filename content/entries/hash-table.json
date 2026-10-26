@@ -1,0 +1,42 @@
+{
+  "$schema": "../entry.schema.json",
+  "id": "hash-table",
+  "title": "Hash Table",
+  "category": "data-structures",
+  "difficulty": "intermediate",
+  "definition": "A hash table stores key–value pairs and uses a hash function to turn each key into an array position, giving average constant-time lookups, inserts and deletes.",
+  "explanation": "A **hash function** maps a key (a string, a number, an object) to an integer. The table takes that integer modulo the number of buckets to pick where the pair lives, so finding a key means computing one hash and looking in one place, instead of searching through everything.\n\nDifferent keys can land in the same bucket; this is a **collision**. *Separate chaining* keeps a small list in every bucket and searches it. *Open addressing* instead probes for another free slot in the array. Either way, collisions are the reason hash tables are only constant time **on average**.\n\nTo stay fast, the table tracks its **load factor** (items divided by buckets). When it passes a threshold (0.75 is common), the table allocates more buckets and re-inserts everything. That resize is expensive but rare, so the cost per insert averages out to constant time. With a poor hash function that sends many keys to one bucket, operations degrade to O(n).",
+  "whyItMatters": "Hash tables power dictionaries, sets, caches, database indexes for equality lookups, symbol tables in compilers and counting problems of every kind. Knowing how they work explains why keys must be hashable and why iteration order is often unspecified.",
+  "complexity": {
+    "time": "O(1) average, O(n) worst case",
+    "space": "O(n)"
+  },
+  "examples": [
+    {
+      "language": "python",
+      "title": "Chaining from scratch",
+      "code": "class HashTable:\n    \"\"\"A tiny hash table that resolves collisions with separate chaining.\"\"\"\n\n    def __init__(self, capacity=8):\n        self._buckets = [[] for _ in range(capacity)]\n        self._size = 0\n\n    def _bucket(self, key):\n        return self._buckets[hash(key) % len(self._buckets)]\n\n    def put(self, key, value):\n        bucket = self._bucket(key)\n        for i, (existing_key, _) in enumerate(bucket):\n            if existing_key == key:\n                bucket[i] = (key, value)  # overwrite an existing key\n                return\n        bucket.append((key, value))\n        self._size += 1\n        if self._size > 0.75 * len(self._buckets):\n            self._resize()\n\n    def get(self, key, default=None):\n        for existing_key, value in self._bucket(key):\n            if existing_key == key:\n                return value\n        return default\n\n    def _resize(self):\n        pairs = [pair for bucket in self._buckets for pair in bucket]\n        self._buckets = [[] for _ in range(len(self._buckets) * 2)]\n        for key, value in pairs:\n            self._bucket(key).append((key, value))\n\n\ntable = HashTable()\nfor word in [\"cat\", \"dog\", \"bird\", \"fish\", \"ant\"]:\n    table.put(word, len(word))\n\nprint(table.get(\"bird\"))   # 4\nprint(table.get(\"zebra\"))  # None\n",
+      "explanation": "Each bucket is a list of (key, value) pairs. put overwrites an existing key or appends, and doubles the bucket count when the load factor passes 0.75. In everyday Python you would simply use dict."
+    },
+    {
+      "language": "javascript",
+      "title": "Counting words with Map",
+      "code": "const text = \"the quick brown fox jumps over the lazy dog the end\";\nconst counts = new Map();\n\nfor (const word of text.split(\" \")) {\n  counts.set(word, (counts.get(word) ?? 0) + 1); // average O(1) per update\n}\n\nconsole.log(counts.get(\"the\")); // 3\nconsole.log(counts.has(\"cat\")); // false\n",
+      "explanation": "Map is a built-in hash table. Counting occurrences with one pass and O(1) average updates is the textbook use case."
+    },
+    {
+      "language": "java",
+      "title": "Counting words with HashMap",
+      "code": "import java.util.HashMap;\nimport java.util.Map;\n\npublic class WordCount {\n    public static void main(String[] args) {\n        String text = \"the quick brown fox jumps over the lazy dog the end\";\n        Map<String, Integer> counts = new HashMap<>();\n\n        for (String word : text.split(\" \")) {\n            counts.merge(word, 1, Integer::sum); // average O(1) per update\n        }\n\n        System.out.println(counts.get(\"the\"));         // 3\n        System.out.println(counts.containsKey(\"cat\")); // false\n    }\n}\n",
+      "explanation": "HashMap.merge inserts 1 for a new key or combines the old value with 1. Iteration order of a HashMap is not guaranteed."
+    }
+  ],
+  "visual": {
+    "type": "svg",
+    "path": "diagrams/hash-table.svg",
+    "alt": "A table of five numbered buckets. Fish is in bucket 1, cat and bird are chained together in bucket 2 after a collision, ant is in bucket 3, dog is in bucket 4, and bucket 0 is empty."
+  },
+  "related": ["big-o-notation", "binary-search"],
+  "tags": ["hashing", "key-value", "collisions"],
+  "source": "bundled"
+}

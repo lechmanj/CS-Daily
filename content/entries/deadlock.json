@@ -1,0 +1,38 @@
+{
+  "$schema": "../entry.schema.json",
+  "id": "deadlock",
+  "title": "Deadlock",
+  "category": "operating-systems",
+  "difficulty": "advanced",
+  "definition": "A deadlock is a state in which two or more threads or processes each hold a resource the others need and wait forever, so none of them can make progress.",
+  "explanation": "The classic case: Thread A holds Lock 1 and waits for Lock 2, while Thread B holds Lock 2 and waits for Lock 1. Neither will release what it holds until it gets what it wants, so both wait forever.\n\nA deadlock needs all four **Coffman conditions** at once:\n\n- **Mutual exclusion**: a resource can be held by only one thread at a time.\n- **Hold and wait**: a thread holds one resource while waiting for another.\n- **No preemption**: a resource cannot be taken away; its holder must release it.\n- **Circular wait**: there is a cycle of threads, each waiting for a resource held by the next.\n\nPrevention means breaking at least one condition. The most common fix is a **global lock order**: if every thread acquires locks in the same order, a cycle cannot form. Other options are acquiring all needed resources at once, or using try-locks with timeouts and backing off. Systems that cannot prevent deadlock, such as databases, instead *detect* cycles in a wait-for graph and abort one participant.",
+  "whyItMatters": "Deadlocks freeze programs without crashing them, and because they depend on exact timing they often pass testing and appear only under production load. They affect multithreaded servers, database transactions and any code that takes more than one lock.",
+  "examples": [
+    {
+      "language": "python",
+      "title": "Provoking and detecting a deadlock",
+      "code": "import threading\n\nlock_a = threading.Lock()\nlock_b = threading.Lock()\nboth_hold_one = threading.Barrier(2)\nboth_tried = threading.Barrier(2)\n\ndef worker(name, first, second):\n    with first:\n        both_hold_one.wait()                    # each thread now holds one lock\n        got_second = second.acquire(timeout=1)  # a plain acquire() would hang forever\n        both_tried.wait()                       # keep holding until both have tried\n        if got_second:\n            second.release()\n            print(f\"{name}: finished\")\n        else:\n            print(f\"{name}: gave up, circular wait detected\")\n\n# The two threads take the locks in opposite orders.\nt1 = threading.Thread(target=worker, args=(\"T1\", lock_a, lock_b))\nt2 = threading.Thread(target=worker, args=(\"T2\", lock_b, lock_a))\nt1.start(); t2.start()\nt1.join(); t2.join()\n",
+      "explanation": "The first barrier forces the unlucky timing: both threads hold one lock before asking for the second. The second barrier keeps each thread holding its lock until both have tried, so both reliably give up. Real deadlocked code usually has no timeout and simply hangs."
+    },
+    {
+      "language": "python",
+      "title": "Fix: consistent lock order",
+      "code": "import threading\n\nlock_a = threading.Lock()\nlock_b = threading.Lock()\n\ndef worker(name):\n    with lock_a:          # every thread locks A first, then B\n        with lock_b:\n            print(f\"{name}: finished\")\n\nt1 = threading.Thread(target=worker, args=(\"T1\",))\nt2 = threading.Thread(target=worker, args=(\"T2\",))\nt1.start(); t2.start()\nt1.join(); t2.join()\n",
+      "explanation": "Because both threads acquire lock_a before lock_b, whoever gets lock_a first can always go on to get lock_b. A cycle is impossible, so the circular-wait condition is broken."
+    },
+    {
+      "language": "java",
+      "title": "Fix: consistent lock order",
+      "code": "public class OrderedLocks {\n    private static final Object LOCK_A = new Object();\n    private static final Object LOCK_B = new Object();\n\n    static void work(String name) {\n        synchronized (LOCK_A) {         // every thread takes A first, then B\n            synchronized (LOCK_B) {\n                System.out.println(name + \": finished\");\n            }\n        }\n    }\n\n    public static void main(String[] args) throws InterruptedException {\n        Thread t1 = new Thread(() -> work(\"T1\"));\n        Thread t2 = new Thread(() -> work(\"T2\"));\n        t1.start();\n        t2.start();\n        t1.join();\n        t2.join();\n    }\n}\n",
+      "explanation": "Java's synchronized blocks never time out, so a lock-order bug here really would hang. Documenting and enforcing one order for all nested locks is the standard defense."
+    }
+  ],
+  "visual": {
+    "type": "svg",
+    "path": "diagrams/deadlock.svg",
+    "alt": "Thread A holds Lock 1 and waits for Lock 2. Thread B holds Lock 2 and waits for Lock 1. The arrows form a closed cycle, so neither thread can proceed."
+  },
+  "related": [],
+  "tags": ["concurrency", "locks", "synchronization", "coffman-conditions"],
+  "source": "bundled"
+}
