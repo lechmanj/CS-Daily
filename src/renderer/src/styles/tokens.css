@@ -1,0 +1,30 @@
+/* Design tokens. Light by default, dark via the system preference. */
+:root {
+  --color-bg: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-text: #1c1c1a;
+  --color-text-muted: #5d5d58;
+  --color-border: #e1e1dc;
+  --color-accent: #3b5bdb;
+  --radius: 12px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-sm: 0.8125rem;
+  --text-md: 0.9375rem;
+  --text-lg: 1.125rem;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #18181a;
+    --color-surface: #222225;
+    --color-text: #ececea;
+    --color-text-muted: #a3a39e;
+    --color-border: #34343a;
+    --color-accent: #8da2fb;
+  }
+}

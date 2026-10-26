@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* The header doubles as the drag handle for the frameless window. */
+.widget__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.widget__title {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.widget__close {
+  -webkit-app-region: no-drag;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  line-height: 1;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.widget__close:hover {
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.widget__body {
+  flex: 1;
+  padding: var(--space-4);
+  overflow: auto;
+}
+
+.widget__muted {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
